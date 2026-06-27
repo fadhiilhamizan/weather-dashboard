@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  ATMOSFER design system
+  ----------------------
+  The signature of this app is a "living sky": the background gradient and the
+  accent colour change to match the actual weather + time of day at the searched
+  location. Those values are written to the CSS variables below at runtime
+  (see src/utils/sky.js). Everything else — glass surfaces, text, borders —
+  is derived from them, so the whole UI re-tints in one move.
+*/
+
+:root {
+  /* Sky gradient (overwritten by JS per condition). Default: clear day. */
+  --sky-from: #2f80ed;
+  --sky-via: #56ccf2;
+  --sky-to: #9bd4f5;
+
+  /* Glass surfaces sit on top of the sky like frosted window panes. */
+  --glass-bg: rgba(255, 255, 255, 0.16);
+  --glass-bg-strong: rgba(255, 255, 255, 0.24);
+  --glass-border: rgba(255, 255, 255, 0.28);
+
+  /* Text. High contrast on the sky. */
+  --text-strong: #ffffff;
+  --text-soft: rgba(255, 255, 255, 0.78);
+  --text-faint: rgba(255, 255, 255, 0.55);
+
+  /* Accent (overwritten by JS). */
+  --accent: #ffd66b;
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: theme('fontFamily.sans');
+  color: var(--text-strong);
+  background: linear-gradient(160deg, var(--sky-from) 0%, var(--sky-via) 48%, var(--sky-to) 100%);
+  background-attachment: fixed;
+  /* A long, eased transition makes condition/theme changes feel atmospheric. */
+  transition: background 900ms ease;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Tabular figures keep temperatures and times from jittering as they change. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* ---- Glass surface utility ------------------------------------------------ */
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px rgba(8, 18, 40, 0.18);
+}
+
+.glass-strong {
+  background: var(--glass-bg-strong);
+}
+
+/* Subtle inner highlight on the top edge of glass, like real glass catching light. */
+.glass-sheen {
+  position: relative;
+  overflow: hidden;
+}
+.glass-sheen::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+}
+
+/* ---- Focus + scrollbars (quality floor) ---------------------------------- */
+:focus-visible {
+  outline: 2px solid var(--text-strong);
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+
+.scroll-x {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.4) transparent;
+}
+.scroll-x::-webkit-scrollbar {
+  height: 6px;
+}
+.scroll-x::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+}
+.scroll-x::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Respect users who prefer less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
