@@ -14,14 +14,14 @@ export default function DemoBanner() {
     <div className="glass flex items-center gap-3 rounded-2xl px-4 py-3 text-sm">
       <FlaskConical className="h-4 w-4 shrink-0" style={{ color: 'var(--accent)' }} />
       <p className="flex-1 text-[color:var(--text-soft)]">
-        <span className="font-semibold text-white">Demo mode.</span> Showing realistic sample data —
+        <span className="font-semibold text-[color:var(--text-strong)]">Demo mode.</span> Showing realistic sample data —
         add an OpenWeather API key on the server for live weather.
       </p>
       <button
         type="button"
         onClick={() => setDismissed(true)}
         aria-label="Dismiss"
-        className="rounded-full p-1 text-[color:var(--text-faint)] hover:text-white"
+        className="rounded-full p-1 text-[color:var(--text-faint)] hover:text-[color:var(--text-strong)]"
       >
         <X className="h-4 w-4" />
       </button>

@@ -33,6 +33,8 @@ function omSample() {
       uv_index: Array.from({ length: hours }, () => 8.34),
       dew_point_2m: Array.from({ length: hours }, () => 24.6),
       visibility: Array.from({ length: hours }, () => 10000),
+      wind_speed_10m: Array.from({ length: hours }, () => 3.5),
+      relative_humidity_2m: Array.from({ length: hours }, () => 68),
       is_day: Array.from({ length: hours }, () => 1),
     },
     daily: {
@@ -63,6 +65,12 @@ describe('adaptForecast (Open-Meteo -> contract)', () => {
     const out = adaptForecast(omSample(), place, 'metric', null);
     expect(out.hourly).toHaveLength(24);
     expect(out.hourly[0].pop).toBe(42);
+  });
+
+  it('maps hourly wind speed and humidity into the contract', () => {
+    const out = adaptForecast(omSample(), place, 'metric', null);
+    expect(out.hourly[0].windSpeed).toBe(3.5);
+    expect(out.hourly[0].humidity).toBe(68);
   });
 
   it('limits daily to 7 and rounds min/max', () => {

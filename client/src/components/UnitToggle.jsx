@@ -25,7 +25,7 @@ export default function UnitToggle({ units, onChange }) {
             aria-pressed={active}
             className={[
               'tnum rounded-full px-3 py-1 text-sm font-semibold transition-colors',
-              active ? 'text-[#0b1f3a]' : 'text-[color:var(--text-soft)] hover:text-white',
+              active ? 'text-[#0b1f3a]' : 'text-[color:var(--text-soft)] hover:text-[color:var(--text-strong)]',
             ].join(' ')}
             style={active ? { background: 'var(--accent)' } : undefined}
           >

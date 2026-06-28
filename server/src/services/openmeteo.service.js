@@ -37,6 +37,8 @@ const HOURLY_VARS = [
   'uv_index',
   'dew_point_2m',
   'visibility',
+  'wind_speed_10m',
+  'relative_humidity_2m',
   'is_day',
 ];
 
@@ -117,6 +119,8 @@ export function adaptForecast(data, place, units, air) {
       dt: times[i],
       temp: h.temperature_2m?.[i],
       pop: (h.precipitation_probability?.[i] ?? 0) / 100, // transform re-multiplies
+      wind_speed: h.wind_speed_10m?.[i] ?? null,
+      humidity: h.relative_humidity_2m?.[i] ?? null,
       weather: [wmoToCondition(h.weather_code?.[i], h.is_day?.[i] === 1)],
     });
   }

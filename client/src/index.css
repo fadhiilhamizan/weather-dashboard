@@ -21,17 +21,19 @@
   /* Glass surfaces sit on top of the sky like frosted window panes. */
   --glass-bg: rgba(255, 255, 255, 0.16);
   --glass-bg-strong: rgba(255, 255, 255, 0.24);
-  --glass-border: rgba(255, 255, 255, 0.28);
+  --glass-border: rgba(10, 34, 54, 0.16);
 
-  /* Text. High contrast on the sky. */
-  --text-strong: #ffffff;
-  --text-soft: rgba(255, 255, 255, 0.78);
-  --text-faint: rgba(255, 255, 255, 0.55);
+  /* Text. The default sky is a bright clear day, so the default tone is dark
+     text for WCAG contrast; applySky() (sky.js) flips to light text on dark /
+     night / stormy skies, and the dark theme block below pins light text. */
+  --text-strong: #0a2236;
+  --text-soft: rgba(10, 34, 54, 0.76);
+  --text-faint: rgba(10, 34, 54, 0.52);
 
   /* Accent (overwritten by JS). */
   --accent: #ffd66b;
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 /*

@@ -26,13 +26,13 @@ export default function AlertBanner({ alerts = [] }) {
       >
         <AlertTriangle className="h-5 w-5 shrink-0" style={{ color: 'var(--accent)' }} />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-white">{primary.event}</p>
+          <p className="truncate text-sm font-semibold text-[color:var(--text-strong)]">{primary.event}</p>
           {primary.sender && (
             <p className="truncate text-xs text-[color:var(--text-soft)]">{primary.sender}</p>
           )}
         </div>
         {alerts.length > 1 && (
-          <span className="rounded-full bg-white/15 px-2 py-0.5 text-xs font-semibold text-white">
+          <span className="rounded-full bg-white/15 px-2 py-0.5 text-xs font-semibold text-[color:var(--text-strong)]">
             +{alerts.length - 1}
           </span>
         )}
@@ -45,7 +45,7 @@ export default function AlertBanner({ alerts = [] }) {
         <div className="mt-3 space-y-3 border-t border-white/15 pt-3">
           {alerts.map((a, i) => (
             <div key={`${a.event}-${i}`}>
-              <p className="text-sm font-semibold text-white">{a.event}</p>
+              <p className="text-sm font-semibold text-[color:var(--text-strong)]">{a.event}</p>
               <p className="mt-1 whitespace-pre-line text-xs leading-relaxed text-[color:var(--text-soft)]">
                 {a.description}
               </p>

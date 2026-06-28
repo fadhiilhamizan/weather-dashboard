@@ -5,19 +5,18 @@ import {
   Gauge,
   Eye,
   Thermometer,
-  Sunrise,
-  Sunset,
+  Moon,
   Leaf,
 } from 'lucide-react';
+import SunArc from './SunArc.jsx';
+import MoonPhase from './MoonPhase.jsx';
 import {
   formatSpeed,
   formatPercent,
   formatVisibility,
   formatTemp,
-  formatTime,
   degToCompass,
   uvCategory,
-  DISPLAY_LOCALE,
 } from '../utils/formatters.js';
 
 function Stat({ icon: Icon, label, value, sub, accent = false }) {
@@ -27,7 +26,7 @@ function Stat({ icon: Icon, label, value, sub, accent = false }) {
         <Icon className="h-4 w-4" strokeWidth={2} />
         <span className="text-xs font-medium uppercase tracking-wide">{label}</span>
       </div>
-      <div className="tnum text-2xl font-semibold text-white">{value}</div>
+      <div className="tnum text-2xl font-semibold text-[color:var(--text-strong)]">{value}</div>
       {sub && (
         <div
           className="text-xs font-medium"
@@ -78,8 +77,6 @@ export default function Highlights({ data }) {
           value={formatVisibility(current.visibility, units)}
         />
         <Stat icon={Thermometer} label="Dew Point" value={formatTemp(current.dewPoint)} />
-        <Stat icon={Sunrise} label="Sunrise" value={formatTime(current.sunrise, tz, DISPLAY_LOCALE)} />
-        <Stat icon={Sunset} label="Sunset" value={formatTime(current.sunset, tz, DISPLAY_LOCALE)} />
         {airQuality && (
           <Stat
             icon={Leaf}
@@ -88,6 +85,22 @@ export default function Highlights({ data }) {
             sub={`AQI ${airQuality.aqi}/5`}
           />
         )}
+
+        {/* Sun arc spans two columns; moon phase sits beside it. */}
+        <div className="col-span-2">
+          <SunArc sunrise={current.sunrise} sunset={current.sunset} now={current.dt} tz={tz} />
+        </div>
+        <div className="col-span-2 sm:col-span-1">
+          <div className="glass glass-sheen flex h-full flex-col gap-2 rounded-2xl p-4">
+            <div className="flex items-center gap-1.5 text-[color:var(--text-faint)]">
+              <Moon className="h-4 w-4" strokeWidth={2} />
+              <span className="text-xs font-medium uppercase tracking-wide">Moon</span>
+            </div>
+            <div className="flex flex-1 items-center">
+              <MoonPhase date={new Date(current.dt * 1000)} />
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

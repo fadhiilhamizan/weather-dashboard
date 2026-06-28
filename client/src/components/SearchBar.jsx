@@ -126,7 +126,7 @@ export default function SearchBar({
           placeholder="Search for a city…"
           aria-label="Search for a city"
           autoComplete="off"
-          className="tnum w-full bg-transparent text-base text-white placeholder:text-[color:var(--text-faint)] focus:outline-none"
+          className="tnum w-full bg-transparent text-base text-[color:var(--text-strong)] placeholder:text-[color:var(--text-faint)] focus:outline-none"
         />
         {query && (
           <button
@@ -136,7 +136,7 @@ export default function SearchBar({
               setResults([]);
             }}
             aria-label="Clear search"
-            className="rounded-full p-1 text-[color:var(--text-faint)] hover:text-white"
+            className="rounded-full p-1 text-[color:var(--text-faint)] hover:text-[color:var(--text-strong)]"
           >
             <X className="h-4 w-4" />
           </button>
@@ -148,7 +148,7 @@ export default function SearchBar({
           disabled={geoLoading}
           aria-label="Use my location"
           title="Use my location"
-          className="rounded-full p-1 text-[color:var(--text-soft)] transition-colors hover:text-white disabled:opacity-60"
+          className="rounded-full p-1 text-[color:var(--text-soft)] transition-colors hover:text-[color:var(--text-strong)] disabled:opacity-60"
         >
           {geoLoading ? (
             <Loader2 className="h-5 w-5 animate-spin" />
@@ -168,7 +168,7 @@ export default function SearchBar({
               <button
                 type="button"
                 onClick={onClearHistory}
-                className="text-xs text-[color:var(--text-faint)] hover:text-white"
+                className="text-xs text-[color:var(--text-faint)] hover:text-[color:var(--text-strong)]"
               >
                 Clear
               </button>
@@ -198,7 +198,7 @@ export default function SearchBar({
                         type="button"
                         onClick={() => chooseHistory(item)}
                         onMouseEnter={() => setActive(i)}
-                        className="flex-1 truncate text-left text-white"
+                        className="flex-1 truncate text-left text-[color:var(--text-strong)]"
                       >
                         {placeLabel(item)}
                       </button>
@@ -206,7 +206,7 @@ export default function SearchBar({
                         type="button"
                         onClick={() => onRemoveHistory(item.id)}
                         aria-label={`Remove ${item.name}`}
-                        className="rounded p-0.5 text-[color:var(--text-faint)] opacity-0 transition-opacity hover:text-white group-hover:opacity-100"
+                        className="rounded p-0.5 text-[color:var(--text-faint)] opacity-0 transition-opacity hover:text-[color:var(--text-strong)] group-hover:opacity-100"
                       >
                         <X className="h-3.5 w-3.5" />
                       </button>
@@ -223,7 +223,7 @@ export default function SearchBar({
                     onClick={() => choosePlace(item)}
                     onMouseEnter={() => setActive(i)}
                     className={[
-                      'flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-white',
+                      'flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-[color:var(--text-strong)]',
                       isActive ? 'bg-white/15' : 'hover:bg-white/10',
                     ].join(' ')}
                   >

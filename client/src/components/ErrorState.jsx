@@ -33,10 +33,10 @@ export default function ErrorState({ error, onRetry }) {
         className="flex h-16 w-16 items-center justify-center rounded-2xl"
         style={{ background: 'var(--glass-bg-strong)' }}
       >
-        <Icon className="h-8 w-8 text-white" strokeWidth={1.5} />
+        <Icon className="h-8 w-8 text-[color:var(--text-strong)]" strokeWidth={1.5} />
       </div>
       <div>
-        <h2 className="text-lg font-semibold text-white">{preset.title}</h2>
+        <h2 className="text-lg font-semibold text-[color:var(--text-strong)]">{preset.title}</h2>
         <p className="mt-1 max-w-sm text-sm text-[color:var(--text-soft)]">
           {error?.message || preset.hint}
         </p>

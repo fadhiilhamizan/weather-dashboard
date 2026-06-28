@@ -39,8 +39,14 @@ A fast, full-stack weather dashboard built around a **backend proxy**, **respons
 
 **Improvisations that push it past the baseline**
 
-- **Living sky theming** — the background gradient and accent colour are derived at runtime from the current condition code and whether it's day or night at the searched location. The entire UI eases into a new palette in one move. *The subject of the app is the changing sky, so the interface is too.*
-- **Theme switcher** — three modes (living **Sky**, neutral **Dark**, neutral **Light**) toggled from the header and persisted to `localStorage`. Dark/Light pin a fixed palette; Sky keeps the weather-driven re-tinting.
+- **Living sky theming** — the background gradient and accent colour are derived at runtime from the current condition code and whether it's day or night at the searched location. The entire UI eases into a new palette in one move. *The subject of the app is the changing sky, so the interface is too.* Text colour adapts to the sky's luminance (dark on bright skies, light on dark) to keep WCAG-AA contrast.
+- **Light / Dark themes** — **Light** is the weather-driven living sky; **Dark** is a fixed neutral palette. Toggled from the header and persisted to `localStorage`.
+- **Interactive 24-hour chart** — a dependency-free SVG graph with a Temperature / Precipitation / Wind toggle and a hover/touch tooltip that snaps to the nearest hour. Backed by a visually-hidden data table for screen readers.
+- **Saved locations & comparison** — star any place to pin it, then open the **Compare** view to see all your saved cities side by side (each with a sparkline). Saved locations persist to `localStorage`.
+- **Shareable deep links** — the active city and view live in the URL (`?q=Tokyo`, `?view=compare`), so any view is bookmarkable and shareable, with working back/forward.
+- **Weather radar map** — an interactive Leaflet map (lazy-loaded, code-split) with OpenStreetMap tiles and a live RainViewer precipitation overlay; tap to load weather anywhere.
+- **Sun arc & moon phase** — sunrise→sunset shown as an arc with the sun positioned by the time of day, plus the current moon phase — both derived locally from data already on hand.
+- **Installable PWA** — a service worker precaches the app shell and keeps the last forecast available offline (NetworkFirst); add it to your home screen.
 - **Animated, condition-aware UI** — a CSS particle layer rains/snows/drifts clouds/twinkles stars to match the weather, cards ease in with a staggered entrance, the hero temperature counts up, and the weather icons have subtle per-condition motion. All of it is disabled under `prefers-reduced-motion`.
 - **Zero-setup, real weather out of the box** — the app defaults to **Open-Meteo**, which is free and needs **no API key**, so `npm run dev` shows live weather immediately. OpenWeather is still supported (set a key), and an offline demo mode is available via `WEATHER_PROVIDER=demo`. All three flow through the same transform layer, so the UI can't tell them apart.
 - **Smart insights** — a small panel that turns the raw numbers into plain-language takeaways (umbrella timing, UV protection, wind warnings) including a **sector angle** for agriculture/outdoor work, nodding to the brief's "specialise by industry" idea.
@@ -111,7 +117,9 @@ Calling a weather API straight from the browser is the most common mistake in th
 | Frontend | **React + Vite** | Fast dev server and build, component model fits a dashboard well. |
 | Styling | **Tailwind CSS + CSS variables** | Utilities for speed; CSS variables drive the runtime "living sky" theming that Tailwind alone can't express. |
 | Icons | **lucide-react** | Clean, consistent line icons that suit the glass aesthetic. |
-| Tests | **Vitest** | Same runner on both client and server; fast and Jest-compatible. |
+| Map | **Leaflet** + OpenStreetMap + **RainViewer** | Keyless radar map, dynamically imported so it's code-split out of the main bundle. |
+| Offline | **vite-plugin-pwa** (Workbox) | Installable PWA; precaches the shell and serves the last forecast offline. |
+| Tests | **Vitest** + **Testing Library** | Same runner on client and server; component/hook tests run under jsdom, pure utils on node. |
 | Provider | **Open-Meteo** (default) or **OpenWeather One Call 3.0** | Open-Meteo is free with no API key or quota, so the app has real weather with zero setup. Provider codes (WMO ↔ OpenWeather) and payload shapes are reconciled in the transform layer, so the client contract is identical either way. |
 
 ---
@@ -282,8 +290,8 @@ npm --prefix client test
 
 What's covered:
 
-- **Server** — temperature/time conversion and timezone handling, the transform/anti-corruption layer (raw payload → clean contract), and cache behaviour (hit/miss, expiry).
-- **Client** — the pure formatting utilities: temperature and unit formatting, visibility conversion, the 16-point compass, UV banding, and timezone-aware time/date formatting (including date roll-over across timezone boundaries).
+- **Server** — temperature/time conversion and timezone handling, the transform/anti-corruption layer (raw payload → clean contract, including the Open-Meteo WMO-code mapping), and cache behaviour (hit/miss, expiry).
+- **Client** — pure utilities (formatting, moon phase, URL state) plus component/hook tests under jsdom: the favourites hook, theme toggle, and the interactive chart (metric switching + the accessible data table).
 
 All date/time tests pass explicit timezone and locale arguments so they're deterministic regardless of where they run.
 

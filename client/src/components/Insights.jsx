@@ -115,7 +115,7 @@ export default function Insights({ data }) {
               <Icon className="h-5 w-5" strokeWidth={2} />
             </div>
             <div>
-              <p className="text-sm font-semibold text-white">{title}</p>
+              <p className="text-sm font-semibold text-[color:var(--text-strong)]">{title}</p>
               <p className="mt-0.5 text-sm leading-snug text-[color:var(--text-soft)]">{text}</p>
             </div>
           </div>

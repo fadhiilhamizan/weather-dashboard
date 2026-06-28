@@ -51,6 +51,40 @@ export function skyFor(conditionId, isDay) {
   return palette[isDay ? 'day' : 'night'];
 }
 
+// sRGB relative luminance (0 = black, 1 = white) of a #rrggbb colour, used to
+// decide whether the sky is light enough to need dark text for WCAG contrast.
+function relLuminance(hex) {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex);
+  if (!m) return 0;
+  const n = parseInt(m[1], 16);
+  const channel = (c) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  };
+  const r = channel((n >> 16) & 255);
+  const g = channel((n >> 8) & 255);
+  const b = channel(n & 255);
+  return 0.2126 * r + 0.7152 * g + 0.4722 * b;
+}
+
+// Text/border variables for the two contrast tones. On bright (daytime, clear)
+// skies we switch to dark text so labels and headings meet WCAG AA; on dark
+// (night / stormy / overcast) skies the default light text stays.
+const DARK_TEXT = {
+  '--text-strong': '#0a2236',
+  '--text-soft': 'rgba(10,34,54,0.76)',
+  '--text-faint': 'rgba(10,34,54,0.52)',
+  '--glass-border': 'rgba(10,34,54,0.16)',
+};
+const LIGHT_TEXT = {
+  '--text-strong': '#ffffff',
+  '--text-soft': 'rgba(255,255,255,0.78)',
+  '--text-faint': 'rgba(255,255,255,0.55)',
+  '--glass-border': 'rgba(255,255,255,0.28)',
+};
+
+const TEXT_PROPS = Object.keys(LIGHT_TEXT);
+
 /** Write the palette to CSS variables on the document root. */
 export function applySky(conditionId, isDay) {
   if (typeof document === 'undefined') return;
@@ -63,8 +97,13 @@ export function applySky(conditionId, isDay) {
 
   // On darker (night / stormy / overcast) skies, soften the glass a touch so it
   // doesn't glare. Pure cosmetic.
-  const dark = !isDay || ['thunderstorm', 'clouds', 'rain'].includes(categorize(conditionId));
-  root.style.setProperty('--glass-bg', dark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.16)');
+  const darkGlass = !isDay || ['thunderstorm', 'clouds', 'rain'].includes(categorize(conditionId));
+  root.style.setProperty('--glass-bg', darkGlass ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.16)');
+
+  // Contrast: bright skies -> dark text, dark skies -> light text.
+  const bright = relLuminance(sky.via) > 0.3;
+  const tone = bright ? DARK_TEXT : LIGHT_TEXT;
+  for (const prop of TEXT_PROPS) root.style.setProperty(prop, tone[prop]);
 }
 
 /**
@@ -75,7 +114,7 @@ export function applySky(conditionId, isDay) {
 export function clearSky() {
   if (typeof document === 'undefined') return;
   const root = document.documentElement;
-  for (const prop of ['--sky-from', '--sky-via', '--sky-to', '--accent', '--glass-bg']) {
+  for (const prop of ['--sky-from', '--sky-via', '--sky-to', '--accent', '--glass-bg', ...TEXT_PROPS]) {
     root.style.removeProperty(prop);
   }
 }

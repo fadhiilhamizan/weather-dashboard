@@ -30,6 +30,8 @@ function rawSample() {
       dt: now + i * 3600,
       temp: 28 + i * 0.1,
       pop: 0.42,
+      wind_speed: 3.5,
+      humidity: 68,
       weather: [{ id: 500, main: 'Rain', description: 'light rain', icon: '10d' }],
     })),
     daily: Array.from({ length: 8 }, (_, i) => ({
@@ -73,6 +75,12 @@ describe('normaliseWeather', () => {
     const out = normaliseWeather(rawSample(), place, 'metric');
     expect(out.hourly).toHaveLength(24);
     expect(out.hourly[0].pop).toBe(42);
+  });
+
+  it('carries hourly wind speed and humidity through', () => {
+    const out = normaliseWeather(rawSample(), place, 'metric');
+    expect(out.hourly[0].windSpeed).toBe(3.5);
+    expect(out.hourly[0].humidity).toBe(68);
   });
 
   it('limits daily to 7 entries', () => {

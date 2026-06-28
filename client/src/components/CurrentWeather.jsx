@@ -28,7 +28,7 @@ export default function CurrentWeather({ data, isFavorite = false, onToggleFavor
         <div className="min-w-0">
           <div className="flex items-center gap-1.5 text-[color:var(--text-soft)]">
             <MapPin className="h-4 w-4 shrink-0" />
-            <h1 className="truncate text-lg font-semibold text-white">{place || 'Unknown location'}</h1>
+            <h1 className="truncate text-lg font-semibold text-[color:var(--text-strong)]">{place || 'Unknown location'}</h1>
             {onToggleFavorite && (
               <button
                 type="button"
@@ -54,7 +54,7 @@ export default function CurrentWeather({ data, isFavorite = false, onToggleFavor
           </p>
 
           <div className="mt-5 flex items-start gap-2">
-            <span className="tnum font-display text-7xl font-bold leading-none text-white sm:text-8xl">
+            <span className="tnum font-display text-7xl font-bold leading-none text-[color:var(--text-strong)] sm:text-8xl">
               {animatedTemp}
             </span>
             <span className="mt-2 font-display text-3xl font-medium text-[color:var(--text-soft)]">
@@ -62,7 +62,7 @@ export default function CurrentWeather({ data, isFavorite = false, onToggleFavor
             </span>
           </div>
 
-          <p className="mt-3 text-lg font-medium text-white">
+          <p className="mt-3 text-lg font-medium text-[color:var(--text-strong)]">
             {titleCase(current.condition.description)}
           </p>
           <p className="tnum mt-1 text-sm text-[color:var(--text-soft)]">
@@ -70,7 +70,7 @@ export default function CurrentWeather({ data, isFavorite = false, onToggleFavor
             {today && (
               <>
                 {'  ·  '}
-                <span className="text-white">H {formatTemp(today.tempMax)}</span>
+                <span className="text-[color:var(--text-strong)]">H {formatTemp(today.tempMax)}</span>
                 {'  '}
                 <span>L {formatTemp(today.tempMin)}</span>
               </>
@@ -83,7 +83,7 @@ export default function CurrentWeather({ data, isFavorite = false, onToggleFavor
             conditionId={current.condition.id}
             isDay={current.isDay}
             animate
-            className="h-28 w-28 text-white drop-shadow-[0_8px_24px_rgba(0,0,0,0.25)] sm:h-36 sm:w-36"
+            className="h-28 w-28 text-[color:var(--text-strong)] drop-shadow-[0_8px_24px_rgba(0,0,0,0.25)] sm:h-36 sm:w-36"
             strokeWidth={1.25}
           />
         </div>

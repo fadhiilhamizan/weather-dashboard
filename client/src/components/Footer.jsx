@@ -16,7 +16,7 @@ export default function Footer({ demo = false }) {
         href="https://github.com"
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 text-[color:var(--text-soft)] transition-colors hover:text-white"
+        className="inline-flex items-center gap-1.5 text-[color:var(--text-soft)] transition-colors hover:text-[color:var(--text-strong)]"
       >
         <Github className="h-3.5 w-3.5" />
         View source

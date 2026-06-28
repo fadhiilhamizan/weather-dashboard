@@ -67,6 +67,8 @@ export function normaliseWeather(raw, place, units, air = null) {
     dt: h.dt,
     temp: Math.round(h.temp),
     pop: Math.round((h.pop ?? 0) * 100),
+    windSpeed: h.wind_speed ?? null,
+    humidity: h.humidity ?? null,
     condition: condition(h.weather),
     isDay: isDaytime(h.dt, current.sunrise, current.sunset),
   }));

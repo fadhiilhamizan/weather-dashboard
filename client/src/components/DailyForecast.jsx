@@ -28,7 +28,7 @@ export default function DailyForecast({ data }) {
           const width = ((d.tempMax - d.tempMin) / span) * 100;
           return (
             <li key={d.dt} className="grid grid-cols-[3rem_1.75rem_1fr_auto] items-center gap-3 rounded-xl px-1 py-3 transition-colors hover:bg-white/10 sm:grid-cols-[4.5rem_2rem_1fr_9rem]">
-              <span className="text-sm font-medium text-white">
+              <span className="text-sm font-medium text-[color:var(--text-strong)]">
                 {i === 0 ? 'Today' : formatDay(d.dt, tz, DISPLAY_LOCALE)}
               </span>
 
@@ -36,7 +36,7 @@ export default function DailyForecast({ data }) {
                 conditionId={d.condition.id}
                 isDay={true}
                 animate
-                className="h-6 w-6 text-white"
+                className="h-6 w-6 text-[color:var(--text-strong)]"
                 title={titleCase(d.condition.description)}
               />
 
@@ -59,7 +59,7 @@ export default function DailyForecast({ data }) {
                     }}
                   />
                 </div>
-                <span className="tnum w-8 text-right text-sm font-semibold text-white">
+                <span className="tnum w-8 text-right text-sm font-semibold text-[color:var(--text-strong)]">
                   {formatTemp(d.tempMax)}
                 </span>
               </div>

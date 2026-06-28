@@ -9,7 +9,7 @@ import { formatTemp, formatHourLabel, DISPLAY_LOCALE } from '../utils/formatters
  * Precipitation probability is shown under any hour where it's meaningful.
  */
 export default function HourlyForecast({ data }) {
-  const { hourly, location } = data;
+  const { hourly, location, units } = data;
   const tz = location.timezone;
   if (!hourly?.length) return null;
 
@@ -19,9 +19,9 @@ export default function HourlyForecast({ data }) {
         Next 24 hours
       </h2>
 
-      {/* Temperature trend line for the next 24 hours. */}
+      {/* Interactive trend chart for the next 24 hours. */}
       <div className="mb-2">
-        <HourlyChart hourly={hourly} tz={tz} />
+        <HourlyChart hourly={hourly} tz={tz} units={units} />
       </div>
 
       <div className="scroll-x -mx-1 flex gap-2 overflow-x-auto px-1 pb-2">
@@ -36,9 +36,9 @@ export default function HourlyForecast({ data }) {
             <WeatherIcon
               conditionId={h.condition.id}
               isDay={h.isDay}
-              className="h-7 w-7 text-white"
+              className="h-7 w-7 text-[color:var(--text-strong)]"
             />
-            <span className="tnum text-base font-semibold text-white">{formatTemp(h.temp)}</span>
+            <span className="tnum text-base font-semibold text-[color:var(--text-strong)]">{formatTemp(h.temp)}</span>
             <span
               className="tnum flex items-center gap-0.5 text-[11px]"
               style={{ color: h.pop >= 20 ? 'var(--accent)' : 'transparent' }}
