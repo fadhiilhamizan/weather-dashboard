@@ -35,10 +35,12 @@
 }
 
 /*
-  Fixed theme overrides. The default (data-theme="sky" or unset) keeps the
-  "living sky" behaviour where JS writes the sky/accent variables per weather.
-  The dark and light themes pin a neutral palette instead; App.jsx stops calling
-  the sky engine and clears its inline variables so these blocks win.
+  Theme overrides. There are two themes:
+    - "light" (default): the living-sky experience. JS writes the sky/accent
+      variables per weather (see App.jsx + sky.js); the :root defaults above are
+      the starting palette, so no extra block is needed here.
+    - "dark": a fixed neutral dark palette. App.jsx stops calling the sky engine
+      and clears its inline variables so this block wins.
 */
 :root[data-theme='dark'] {
   --sky-from: #0b1220;
@@ -52,20 +54,6 @@
   --text-faint: rgba(241, 245, 249, 0.48);
   --accent: #7dd3fc;
   color-scheme: dark;
-}
-
-:root[data-theme='light'] {
-  --sky-from: #dbeafe;
-  --sky-via: #eff6ff;
-  --sky-to: #f8fafc;
-  --glass-bg: rgba(255, 255, 255, 0.55);
-  --glass-bg-strong: rgba(255, 255, 255, 0.72);
-  --glass-border: rgba(15, 23, 42, 0.12);
-  --text-strong: #0f172a;
-  --text-soft: rgba(15, 23, 42, 0.72);
-  --text-faint: rgba(15, 23, 42, 0.5);
-  --accent: #2563eb;
-  color-scheme: light;
 }
 
 * {

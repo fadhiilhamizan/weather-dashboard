@@ -1,4 +1,4 @@
-import { MapPin } from 'lucide-react';
+import { MapPin, Star } from 'lucide-react';
 import WeatherIcon from './WeatherIcon.jsx';
 import { useCountUp } from '../hooks/useCountUp.js';
 import { titleCase } from '../utils/weatherCodes.js';
@@ -14,7 +14,7 @@ import {
  * The big temperature uses the display face and tabular figures so it stays
  * rock-steady as values update.
  */
-export default function CurrentWeather({ data }) {
+export default function CurrentWeather({ data, isFavorite = false, onToggleFavorite }) {
   const { location, current, units, daily } = data;
   const tz = location.timezone;
   const today = daily?.[0];
@@ -29,6 +29,25 @@ export default function CurrentWeather({ data }) {
           <div className="flex items-center gap-1.5 text-[color:var(--text-soft)]">
             <MapPin className="h-4 w-4 shrink-0" />
             <h1 className="truncate text-lg font-semibold text-white">{place || 'Unknown location'}</h1>
+            {onToggleFavorite && (
+              <button
+                type="button"
+                onClick={onToggleFavorite}
+                aria-pressed={isFavorite}
+                aria-label={isFavorite ? 'Remove from saved locations' : 'Save this location'}
+                title={isFavorite ? 'Saved — click to remove' : 'Save location'}
+                className="ml-0.5 shrink-0 rounded-full p-1 transition-all duration-200 hover:scale-110 hover:bg-white/10"
+              >
+                <Star
+                  className="h-4 w-4"
+                  strokeWidth={2}
+                  style={{
+                    color: isFavorite ? 'var(--accent)' : 'var(--text-faint)',
+                    fill: isFavorite ? 'var(--accent)' : 'transparent',
+                  }}
+                />
+              </button>
+            )}
           </div>
           <p className="mt-1 text-sm text-[color:var(--text-faint)]">
             {formatFullDate(current.dt, tz, DISPLAY_LOCALE)}

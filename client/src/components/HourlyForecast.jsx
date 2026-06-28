@@ -1,5 +1,6 @@
 import { Droplets } from 'lucide-react';
 import WeatherIcon from './WeatherIcon.jsx';
+import HourlyChart from './HourlyChart.jsx';
 import { formatTemp, formatHourLabel, DISPLAY_LOCALE } from '../utils/formatters.js';
 
 /**
@@ -17,6 +18,12 @@ export default function HourlyForecast({ data }) {
       <h2 className="mb-4 px-1 text-sm font-semibold uppercase tracking-wide text-[color:var(--text-soft)]">
         Next 24 hours
       </h2>
+
+      {/* Temperature trend line for the next 24 hours. */}
+      <div className="mb-2">
+        <HourlyChart hourly={hourly} tz={tz} />
+      </div>
+
       <div className="scroll-x -mx-1 flex gap-2 overflow-x-auto px-1 pb-2">
         {hourly.map((h, i) => (
           <div

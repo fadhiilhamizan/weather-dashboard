@@ -1,13 +1,11 @@
-import { CloudSun, Moon, Sun } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 
 /**
- * Three-way theme switch: living "Sky" (weather-driven palette, the default),
- * a neutral "Dark", and a neutral "Light". Controlled by the parent so the
- * choice persists to localStorage and gates the sky engine. Styled to match
- * UnitToggle for a consistent header.
+ * Two-way theme switch: "Light" is the living-sky experience (a weather-driven,
+ * bright palette), "Dark" is a fixed neutral dark palette. Controlled by the
+ * parent so the choice persists to localStorage and gates the sky engine.
  */
 const OPTIONS = [
-  { value: 'sky', label: 'Living sky theme', Icon: CloudSun },
   { value: 'light', label: 'Light theme', Icon: Sun },
   { value: 'dark', label: 'Dark theme', Icon: Moon },
 ];

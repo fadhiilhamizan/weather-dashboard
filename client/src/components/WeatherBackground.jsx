@@ -104,8 +104,9 @@ export default function WeatherBackground({ conditionId, isDay, theme }) {
     [category, isDay]
   );
 
-  // Calm, static backdrop for the neutral themes.
-  if (theme !== 'sky') return null;
+  // The dark theme keeps a calm, static backdrop; particles are a living-sky
+  // (light theme) flourish.
+  if (theme === 'dark') return null;
 
   return (
     <div className="wx-layer" aria-hidden="true">

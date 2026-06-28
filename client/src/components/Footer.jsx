@@ -8,7 +8,7 @@ export default function Footer({ demo = false }) {
   return (
     <footer className="mt-10 flex flex-col items-center gap-2 pb-8 text-center text-xs text-[color:var(--text-faint)]">
       <p>
-        {demo ? 'Sample data for demonstration' : 'Weather data by OpenWeather'}
+        {demo ? 'Sample data for demonstration' : 'Weather data by Open-Meteo'}
         {'  ·  '}
         Built with React, Vite &amp; Express
       </p>
