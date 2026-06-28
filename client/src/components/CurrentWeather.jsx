@@ -1,5 +1,6 @@
 import { MapPin } from 'lucide-react';
 import WeatherIcon from './WeatherIcon.jsx';
+import { useCountUp } from '../hooks/useCountUp.js';
 import { titleCase } from '../utils/weatherCodes.js';
 import {
   unitSymbol,
@@ -17,11 +18,12 @@ export default function CurrentWeather({ data }) {
   const { location, current, units, daily } = data;
   const tz = location.timezone;
   const today = daily?.[0];
+  const animatedTemp = useCountUp(Math.round(current.temp));
 
   const place = [location.name, location.country].filter(Boolean).join(', ');
 
   return (
-    <section className="glass glass-sheen animate-fade-up rounded-3xl p-6 sm:p-8">
+    <section className="glass glass-sheen rounded-3xl p-6 sm:p-8">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <div className="flex items-center gap-1.5 text-[color:var(--text-soft)]">
@@ -34,7 +36,7 @@ export default function CurrentWeather({ data }) {
 
           <div className="mt-5 flex items-start gap-2">
             <span className="tnum font-display text-7xl font-bold leading-none text-white sm:text-8xl">
-              {Math.round(current.temp)}
+              {animatedTemp}
             </span>
             <span className="mt-2 font-display text-3xl font-medium text-[color:var(--text-soft)]">
               {unitSymbol(units)}
@@ -61,7 +63,8 @@ export default function CurrentWeather({ data }) {
           <WeatherIcon
             conditionId={current.condition.id}
             isDay={current.isDay}
-            className="h-28 w-28 animate-float text-white drop-shadow-[0_8px_24px_rgba(0,0,0,0.25)] sm:h-36 sm:w-36"
+            animate
+            className="h-28 w-28 text-white drop-shadow-[0_8px_24px_rgba(0,0,0,0.25)] sm:h-36 sm:w-36"
             strokeWidth={1.25}
           />
         </div>

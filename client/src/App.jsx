@@ -3,6 +3,8 @@ import { CloudSun } from 'lucide-react';
 
 import SearchBar from './components/SearchBar.jsx';
 import UnitToggle from './components/UnitToggle.jsx';
+import ThemeToggle from './components/ThemeToggle.jsx';
+import WeatherBackground from './components/WeatherBackground.jsx';
 import CurrentWeather from './components/CurrentWeather.jsx';
 import Highlights from './components/Highlights.jsx';
 import HourlyForecast from './components/HourlyForecast.jsx';
@@ -18,7 +20,7 @@ import { useWeather } from './hooks/useWeather.js';
 import { useSearchHistory } from './hooks/useSearchHistory.js';
 import { useGeolocation } from './hooks/useGeolocation.js';
 import { usePersistentState } from './hooks/usePersistentState.js';
-import { applySky } from './utils/sky.js';
+import { applySky, clearSky } from './utils/sky.js';
 
 // Sensible default so the dashboard has something to show on first load without
 // nagging for location permission. The locate button opts into GPS on demand.
@@ -29,6 +31,7 @@ export default function App() {
   const history = useSearchHistory();
   const geo = useGeolocation();
   const [units, setUnits] = usePersistentState('atmosfer:units', 'metric');
+  const [theme, setTheme] = usePersistentState('atmosfer:theme', 'sky');
 
   // Remembers what's on screen so flipping units (or retrying) re-fetches the
   // same place. Kept in a ref because it shouldn't itself trigger a render.
@@ -88,23 +91,42 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [units]);
 
-  // Living sky: re-tint the whole UI to match the current condition + day/night.
+  // Reflect the chosen theme on <html> so the CSS theme blocks apply.
   useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
+
+  // Living sky: re-tint the whole UI to match the current condition + day/night.
+  // In the fixed dark/light themes we instead clear the inline sky variables so
+  // the stylesheet's neutral palette wins.
+  useEffect(() => {
+    if (theme !== 'sky') {
+      clearSky();
+      return;
+    }
     const cur = weather.data?.current;
     if (cur) applySky(cur.condition.id, cur.isDay);
-  }, [weather.data]);
+  }, [weather.data, theme]);
 
   const { status, data, error, demo } = weather;
 
   return (
     <div className="relative min-h-full">
-      {/* Soft atmospheric glow layered over the sky gradient. */}
+      {/* Soft atmospheric glow + condition-driven animated particles, layered
+          over the sky gradient. */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div
           className="absolute -top-1/4 left-1/4 h-[55vh] w-[55vh] rounded-full opacity-25 blur-3xl"
           style={{ background: 'var(--accent)' }}
         />
         <div className="absolute -bottom-1/4 right-1/4 h-[50vh] w-[50vh] rounded-full bg-white opacity-10 blur-3xl" />
+        {data?.current && (
+          <WeatherBackground
+            conditionId={data.current.condition.id}
+            isDay={data.current.isDay}
+            theme={theme}
+          />
+        )}
       </div>
 
       <div className="mx-auto w-full max-w-4xl px-4 py-6 sm:py-8">
@@ -114,7 +136,10 @@ export default function App() {
             <CloudSun className="h-7 w-7 text-white" strokeWidth={1.75} />
             <span className="font-display text-xl font-bold tracking-tight text-white">Atmosfer</span>
           </div>
-          <UnitToggle units={units} onChange={setUnits} />
+          <div className="flex items-center gap-2">
+            <ThemeToggle theme={theme} onChange={setTheme} />
+            <UnitToggle units={units} onChange={setUnits} />
+          </div>
         </header>
 
         {/* Search */}
@@ -144,11 +169,22 @@ export default function App() {
           {status === 'success' && data && (
             <>
               <AlertBanner alerts={data.alerts} />
-              <CurrentWeather data={data} />
-              <Highlights data={data} />
-              <HourlyForecast data={data} />
-              <DailyForecast data={data} />
-              <Insights data={data} />
+              {/* Staggered entrance: each card eases up just after the previous. */}
+              {[
+                <CurrentWeather key="current" data={data} />,
+                <Highlights key="highlights" data={data} />,
+                <HourlyForecast key="hourly" data={data} />,
+                <DailyForecast key="daily" data={data} />,
+                <Insights key="insights" data={data} />,
+              ].map((card, i) => (
+                <div
+                  key={card.key}
+                  className="animate-fade-up"
+                  style={{ animationDelay: `${i * 90}ms` }}
+                >
+                  {card}
+                </div>
+              ))}
             </>
           )}
         </main>

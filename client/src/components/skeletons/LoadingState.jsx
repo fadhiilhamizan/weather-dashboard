@@ -4,7 +4,7 @@
  * arrives. A shimmering pulse signals "working" without a spinner.
  */
 function Block({ className = '' }) {
-  return <div className={`animate-pulse rounded-2xl bg-white/10 ${className}`} />;
+  return <div className={`shimmer rounded-2xl ${className}`} />;
 }
 
 export default function LoadingState() {

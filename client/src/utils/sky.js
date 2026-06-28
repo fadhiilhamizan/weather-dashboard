@@ -66,3 +66,16 @@ export function applySky(conditionId, isDay) {
   const dark = !isDay || ['thunderstorm', 'clouds', 'rain'].includes(categorize(conditionId));
   root.style.setProperty('--glass-bg', dark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.16)');
 }
+
+/**
+ * Remove the inline sky variables so a fixed CSS theme (data-theme="dark"|
+ * "light") can take over. applySky() writes inline styles on <html>, which beat
+ * the stylesheet, so they must be cleared when leaving living-sky mode.
+ */
+export function clearSky() {
+  if (typeof document === 'undefined') return;
+  const root = document.documentElement;
+  for (const prop of ['--sky-from', '--sky-via', '--sky-to', '--accent', '--glass-bg']) {
+    root.style.removeProperty(prop);
+  }
+}

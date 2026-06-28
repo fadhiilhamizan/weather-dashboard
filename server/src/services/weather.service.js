@@ -1,5 +1,6 @@
 import { config } from '../config.js';
 import { AppError } from '../utils/AppError.js';
+import { fetchJson } from '../utils/fetchJson.js';
 import { normaliseWeather, normaliseAirQuality } from '../utils/transform.js';
 import {
   buildMockWeather,
@@ -8,33 +9,6 @@ import {
 } from './mock.service.js';
 
 const { weather } = config;
-
-/**
- * fetch() with a timeout so a slow upstream can't hang our request forever.
- */
-async function fetchJson(url, { timeoutMs = 8000 } = {}) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, { signal: controller.signal });
-    if (res.status === 401) {
-      throw AppError.upstream('Weather provider rejected the API key.', 'BAD_API_KEY');
-    }
-    if (res.status === 429) {
-      throw AppError.upstream('Weather provider quota exceeded. Try again later.', 'UPSTREAM_RATE_LIMIT');
-    }
-    if (!res.ok) {
-      throw AppError.upstream(`Weather provider responded with ${res.status}.`, 'UPSTREAM_ERROR');
-    }
-    return await res.json();
-  } catch (err) {
-    if (err instanceof AppError) throw err;
-    if (err.name === 'AbortError') {
-      throw AppError.upstream('Weather provider timed out.', 'UPSTREAM_TIMEOUT');
-    }
-    throw AppError.upstream('Could not reach the weather provider.', 'UPSTREAM_UNREACHABLE');
-  }
-}
 
 const key = () => weather.apiKey;
 

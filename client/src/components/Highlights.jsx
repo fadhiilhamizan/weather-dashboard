@@ -52,7 +52,7 @@ export default function Highlights({ data }) {
   const uv = uvCategory(current.uvi);
 
   return (
-    <section className="animate-fade-up">
+    <section>
       <h2 className="mb-3 px-1 text-sm font-semibold uppercase tracking-wide text-[color:var(--text-soft)]">
         Today's details
       </h2>

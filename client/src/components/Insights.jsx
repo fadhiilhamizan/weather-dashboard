@@ -101,7 +101,7 @@ export default function Insights({ data }) {
   const insights = buildInsights(data);
 
   return (
-    <section className="animate-fade-up">
+    <section>
       <h2 className="mb-3 px-1 text-sm font-semibold uppercase tracking-wide text-[color:var(--text-soft)]">
         Insights
       </h2>

@@ -28,9 +28,38 @@ const ICONS = {
   atmosphere: { day: CloudFog, night: CloudFog },
 };
 
-export default function WeatherIcon({ conditionId, isDay = true, className, strokeWidth = 1.75, ...rest }) {
+// Per-category idle motion. Subtle on purpose — these run forever and may appear
+// many times on screen (hourly strip, daily list). Disabled by prefers-reduced-
+// motion via the global rule in index.css.
+const MOTION = {
+  clear: { day: 'animate-spin-slow', night: 'animate-float' },
+  'clouds-few': { day: 'animate-drift', night: 'animate-drift' },
+  clouds: { day: 'animate-drift', night: 'animate-drift' },
+  rain: { day: 'animate-bob', night: 'animate-bob' },
+  drizzle: { day: 'animate-bob', night: 'animate-bob' },
+  thunderstorm: { day: 'animate-flicker', night: 'animate-flicker' },
+  snow: { day: 'animate-bob', night: 'animate-bob' },
+  atmosphere: { day: 'animate-float', night: 'animate-float' },
+};
+
+export default function WeatherIcon({
+  conditionId,
+  isDay = true,
+  className,
+  strokeWidth = 1.75,
+  animate = false,
+  ...rest
+}) {
   const category = categorize(conditionId);
   const set = ICONS[category] || ICONS.clear;
   const Icon = set[isDay ? 'day' : 'night'];
-  return <Icon className={className} strokeWidth={strokeWidth} aria-hidden="true" {...rest} />;
+  const motion = animate ? (MOTION[category] || MOTION.clear)[isDay ? 'day' : 'night'] : '';
+  return (
+    <Icon
+      className={[className, motion].filter(Boolean).join(' ')}
+      strokeWidth={strokeWidth}
+      aria-hidden="true"
+      {...rest}
+    />
+  );
 }

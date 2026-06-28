@@ -15,6 +15,7 @@ const router = Router();
 router.get('/health', (req, res) => {
   res.json({
     status: 'ok',
+    provider: config.weather.provider,
     demoMode: config.weather.demoMode,
     cache: cache.stats(),
     uptimeSeconds: Math.round(process.uptime()),

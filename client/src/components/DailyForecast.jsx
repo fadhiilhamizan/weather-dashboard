@@ -18,7 +18,7 @@ export default function DailyForecast({ data }) {
   const span = Math.max(weekMax - weekMin, 1);
 
   return (
-    <section className="glass glass-sheen animate-fade-up rounded-3xl p-5">
+    <section className="glass glass-sheen rounded-3xl p-5">
       <h2 className="mb-2 px-1 text-sm font-semibold uppercase tracking-wide text-[color:var(--text-soft)]">
         {daily.length}-day forecast
       </h2>
@@ -27,7 +27,7 @@ export default function DailyForecast({ data }) {
           const left = ((d.tempMin - weekMin) / span) * 100;
           const width = ((d.tempMax - d.tempMin) / span) * 100;
           return (
-            <li key={d.dt} className="grid grid-cols-[3rem_1.75rem_1fr_auto] items-center gap-3 py-3 sm:grid-cols-[4.5rem_2rem_1fr_9rem]">
+            <li key={d.dt} className="grid grid-cols-[3rem_1.75rem_1fr_auto] items-center gap-3 rounded-xl px-1 py-3 transition-colors hover:bg-white/10 sm:grid-cols-[4.5rem_2rem_1fr_9rem]">
               <span className="text-sm font-medium text-white">
                 {i === 0 ? 'Today' : formatDay(d.dt, tz, DISPLAY_LOCALE)}
               </span>
@@ -35,6 +35,7 @@ export default function DailyForecast({ data }) {
               <WeatherIcon
                 conditionId={d.condition.id}
                 isDay={true}
+                animate
                 className="h-6 w-6 text-white"
                 title={titleCase(d.condition.description)}
               />

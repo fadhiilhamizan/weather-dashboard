@@ -7,7 +7,8 @@ import {
   reverseGeocode,
   getWeatherByCoords,
   getWeatherByCity,
-} from '../services/weather.service.js';
+  provider,
+} from '../services/provider.js';
 
 const VALID_UNITS = new Set(['metric', 'imperial']);
 
@@ -44,6 +45,7 @@ export const getByCoords = asyncHandler(async (req, res) => {
 
   res.set('X-Cache', cached ? 'HIT' : 'MISS');
   res.set('X-Demo-Mode', String(value.demo));
+  res.set('X-Provider', provider);
   res.json(value.data);
 });
 
@@ -60,6 +62,7 @@ export const getByCity = asyncHandler(async (req, res) => {
 
   res.set('X-Cache', cached ? 'HIT' : 'MISS');
   res.set('X-Demo-Mode', String(value.demo));
+  res.set('X-Provider', provider);
   res.json(value.data);
 });
 

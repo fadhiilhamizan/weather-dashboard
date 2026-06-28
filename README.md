@@ -16,7 +16,7 @@ A fast, full-stack weather dashboard built around a **backend proxy**, **respons
 - [Project structure](#project-structure)
 - [Getting started](#getting-started)
 - [Environment variables](#environment-variables)
-- [The OpenWeather API key (and demo mode)](#the-openweather-api-key-and-demo-mode)
+- [Providers (Open-Meteo, OpenWeather, demo)](#providers-open-meteo-openweather-demo)
 - [API reference](#api-reference)
 - [How caching works](#how-caching-works)
 - [Testing](#testing)
@@ -40,7 +40,9 @@ A fast, full-stack weather dashboard built around a **backend proxy**, **respons
 **Improvisations that push it past the baseline**
 
 - **Living sky theming** — the background gradient and accent colour are derived at runtime from the current condition code and whether it's day or night at the searched location. The entire UI eases into a new palette in one move. *The subject of the app is the changing sky, so the interface is too.*
-- **Zero-setup demo mode** — if no API key is configured, the server boots into demo mode and serves realistic, internally-consistent mock data through the exact same transform layer. The app runs end-to-end with `npm run dev` and nothing else.
+- **Theme switcher** — three modes (living **Sky**, neutral **Dark**, neutral **Light**) toggled from the header and persisted to `localStorage`. Dark/Light pin a fixed palette; Sky keeps the weather-driven re-tinting.
+- **Animated, condition-aware UI** — a CSS particle layer rains/snows/drifts clouds/twinkles stars to match the weather, cards ease in with a staggered entrance, the hero temperature counts up, and the weather icons have subtle per-condition motion. All of it is disabled under `prefers-reduced-motion`.
+- **Zero-setup, real weather out of the box** — the app defaults to **Open-Meteo**, which is free and needs **no API key**, so `npm run dev` shows live weather immediately. OpenWeather is still supported (set a key), and an offline demo mode is available via `WEATHER_PROVIDER=demo`. All three flow through the same transform layer, so the UI can't tell them apart.
 - **Smart insights** — a small panel that turns the raw numbers into plain-language takeaways (umbrella timing, UV protection, wind warnings) including a **sector angle** for agriculture/outdoor work, nodding to the brief's "specialise by industry" idea.
 - **Air quality, severe-weather alerts, and geolocation** — AQI with a human label, an expandable alert banner when the provider issues warnings, and a one-tap "use my location" button.
 - **Backend hardening** — per-IP rate limiting, request timeouts, graceful shutdown, security headers (Helmet), gzip compression, and an anti-corruption transform layer so the frontend never sees a raw provider payload.
@@ -72,7 +74,7 @@ flowchart LR
       SVC["Weather service"]
       TF["Transform layer<br/>(anti-corruption)"]
     end
-    OW["OpenWeather<br/>One Call 3.0 + Geocoding + Air Pollution"]
+    OW["Weather provider<br/>Open-Meteo (default) or OpenWeather"]
 
     UI -- "GET /api/weather/city?q=…" --> RL --> C
     C -- "cache hit" --> CACHE
@@ -110,7 +112,7 @@ Calling a weather API straight from the browser is the most common mistake in th
 | Styling | **Tailwind CSS + CSS variables** | Utilities for speed; CSS variables drive the runtime "living sky" theming that Tailwind alone can't express. |
 | Icons | **lucide-react** | Clean, consistent line icons that suit the glass aesthetic. |
 | Tests | **Vitest** | Same runner on both client and server; fast and Jest-compatible. |
-| Provider | **OpenWeather One Call 3.0** | Current + hourly + daily + UV + alerts in a single call, plus Geocoding and Air Pollution endpoints. |
+| Provider | **Open-Meteo** (default) or **OpenWeather One Call 3.0** | Open-Meteo is free with no API key or quota, so the app has real weather with zero setup. Provider codes (WMO ↔ OpenWeather) and payload shapes are reconciled in the transform layer, so the client contract is identical either way. |
 
 ---
 
@@ -202,7 +204,8 @@ npm run dev:client
 | --- | --- | --- |
 | `PORT` | `5050` | Port the proxy listens on. |
 | `CORS_ORIGIN` | `http://localhost:5173` | Comma-separated allowed origins. Add your deployed frontend URL in production. |
-| `OPENWEATHER_API_KEY` | _(empty)_ | Your One Call 3.0 key. **Empty → demo mode.** |
+| `WEATHER_PROVIDER` | _(auto)_ | Force a provider: `openmeteo`, `openweather`, or `demo`. Empty → auto: OpenWeather if a key is set, else **Open-Meteo (keyless)**. |
+| `OPENWEATHER_API_KEY` | _(empty)_ | Your One Call 3.0 key. Optional — only needed for the OpenWeather provider. |
 | `CACHE_TTL_SECONDS` | `900` | How long a weather response stays fresh (15 min). |
 | `GEOCODE_CACHE_TTL_SECONDS` | `86400` | Geocoding cache lifetime (24 h — coordinates rarely change). |
 | `RATE_LIMIT_WINDOW_SECONDS` | `60` | Rate-limit window length. |
@@ -216,23 +219,24 @@ npm run dev:client
 
 ---
 
-## The OpenWeather API key (and demo mode)
+## Providers (Open-Meteo, OpenWeather, demo)
 
-This project uses OpenWeather's **One Call API 3.0**, which bundles current weather, hourly and daily forecasts, the UV index, and alerts into one request.
+The app supports three interchangeable data sources, selected by `WEATHER_PROVIDER` (or auto-detected). Every provider is reshaped into one identical client contract by the transform layer, and each weather response carries an `X-Provider` header so you can see which one served it.
 
-1. Create a free account at <https://openweathermap.org/api>.
-2. Subscribe to **One Call API 3.0** (the free plan includes a generous daily allowance).
-3. Put the key in `server/.env` as `OPENWEATHER_API_KEY`.
+**Open-Meteo (default, recommended).** Free, no API key, no registration, no quota — so `npm run dev` shows real, live weather with zero setup. Open-Meteo speaks WMO weather codes and columnar arrays; `server/src/utils/wmoCodes.js` maps WMO codes to OpenWeather-equivalent IDs and `server/src/services/openmeteo.service.js` adapts the payload into the One Call shape before it hits the shared `normaliseWeather`. City search uses Open-Meteo's geocoding API; the GPS button's reverse lookup uses the keyless BigDataCloud endpoint; air quality comes from Open-Meteo's air-quality API (US AQI banded to the same 1–5 scale). Open-Meteo has no severe-weather alerts, so that panel is simply empty.
 
-> Newly created keys can take a little while to activate. Until then — or any time the key is absent — the app falls back to **demo mode**.
+**OpenWeather One Call 3.0.** Optional. Bundles current + hourly + daily + UV + alerts in one request, plus Geocoding and Air Pollution endpoints. To use it:
 
-**Demo mode** serves realistic, internally-consistent mock data (a believable temperature curve, sun times, AQI, etc.) through the *same* transform and caching path as live data. This means the dashboard is fully explorable with zero configuration, and reviewers can run it instantly. Responses include an `X-Demo-Mode: true` header and the UI shows a small, dismissible "demo mode" notice.
+1. Create a free account at <https://openweathermap.org/api> and subscribe to **One Call API 3.0**.
+2. Put the key in `server/.env` as `OPENWEATHER_API_KEY` (the app then auto-selects OpenWeather).
+
+**Demo mode** (`WEATHER_PROVIDER=demo`) serves realistic, internally-consistent mock data through the *same* transform and caching path, with no network calls at all. Responses include an `X-Demo-Mode: true` header and the UI shows a small, dismissible "demo mode" notice — handy for offline development.
 
 ---
 
 ## API reference
 
-All endpoints are under `/api` and return JSON. Responses carry `X-Cache` (`HIT`/`MISS`) and `X-Demo-Mode` headers.
+All endpoints are under `/api` and return JSON. Responses carry `X-Cache` (`HIT`/`MISS`), `X-Provider` (`openmeteo`/`openweather`/`demo`), and `X-Demo-Mode` headers.
 
 | Method & path | Query params | Description |
 | --- | --- | --- |
@@ -293,7 +297,7 @@ A typical split deploy:
 
 1. New Web Service from the repo, root directory `server`.
 2. Build: `npm install` · Start: `npm start`.
-3. Set env vars: `OPENWEATHER_API_KEY`, and `CORS_ORIGIN` = your frontend URL.
+3. Set env vars: `CORS_ORIGIN` = your frontend URL. Optionally `OPENWEATHER_API_KEY` to use OpenWeather; otherwise it runs on keyless Open-Meteo.
 
 **Client on Vercel (or Netlify):**
 

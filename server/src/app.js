@@ -27,7 +27,7 @@ export function createApp() {
         return cb(new Error(`Origin ${origin} not allowed by CORS`));
       },
       // Let the browser read our custom headers cross-origin (cache + demo info).
-      exposedHeaders: ['X-Cache', 'X-Demo-Mode', 'X-RateLimit-Remaining', 'X-RateLimit-Reset', 'Retry-After'],
+      exposedHeaders: ['X-Cache', 'X-Demo-Mode', 'X-Provider', 'X-RateLimit-Remaining', 'X-RateLimit-Reset', 'Retry-After'],
     })
   );
 

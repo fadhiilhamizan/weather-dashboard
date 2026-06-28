@@ -13,7 +13,7 @@ export default function HourlyForecast({ data }) {
   if (!hourly?.length) return null;
 
   return (
-    <section className="glass glass-sheen animate-fade-up rounded-3xl p-5">
+    <section className="glass glass-sheen rounded-3xl p-5">
       <h2 className="mb-4 px-1 text-sm font-semibold uppercase tracking-wide text-[color:var(--text-soft)]">
         Next 24 hours
       </h2>
@@ -21,7 +21,7 @@ export default function HourlyForecast({ data }) {
         {hourly.map((h, i) => (
           <div
             key={h.dt}
-            className="flex w-[68px] shrink-0 flex-col items-center gap-2 rounded-2xl px-2 py-3 transition-colors hover:bg-white/10"
+            className="flex w-[68px] shrink-0 flex-col items-center gap-2 rounded-2xl px-2 py-3 transition-all duration-200 hover:scale-105 hover:bg-white/10"
           >
             <span className="tnum text-xs font-medium text-[color:var(--text-soft)]">
               {i === 0 ? 'Now' : formatHourLabel(h.dt, tz, DISPLAY_LOCALE)}
