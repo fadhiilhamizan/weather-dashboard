@@ -1,0 +1,14 @@
+{
+  "buildCommand": "npm --prefix client run build",
+  "outputDirectory": "client/dist",
+  "devCommand": "npm run dev",
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "rewrites": [
+    {
+      "source": "/api/:match*",
+      "destination": "http://localhost:3000/api/:match*"
+    }
+  ]
+}
