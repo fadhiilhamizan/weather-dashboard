@@ -1,14 +1,12 @@
 {
-  "buildCommand": "npm --prefix client run build",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm --prefix client install && npm --prefix client run build",
   "outputDirectory": "client/dist",
   "devCommand": "npm run dev",
-  "env": {
-    "NODE_ENV": "production"
-  },
   "rewrites": [
     {
-      "source": "/api/:match*",
-      "destination": "http://localhost:3000/api/:match*"
+      "source": "/((?!assets/).*)",
+      "destination": "/index.html"
     }
   ]
 }
