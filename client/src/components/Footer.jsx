@@ -13,7 +13,7 @@ export default function Footer({ demo = false }) {
         Built with React, Vite &amp; Express
       </p>
       <a
-        href="https://github.com"
+        href="https://github.com/fadhiilhamizan/weather-dashboard"
         target="_blank"
         rel="noopener noreferrer"
         className="inline-flex items-center gap-1.5 text-[color:var(--text-soft)] transition-colors hover:text-[color:var(--text-strong)]"
