@@ -57,8 +57,9 @@ A fast, full-stack weather dashboard built around a **backend proxy**, **respons
 
 ## Live demo
 
-- **App:** _add your deployed URL here_ (e.g. Vercel)
-- **API:** _add your deployed API URL here_ (e.g. Render)
+- **Live app:** <https://atmosfer.vercel.app/>
+
+Deployed to Vercel as a single full-stack app — the React frontend and the Express API run together, with the API served under `/api/*` on the same origin (so there's no separate API URL or CORS hop). Open the link and search any city, use your location, or open the **Map** view and tap anywhere to load the weather there.
 
 A self-contained static preview (`preview.html`) is also included in the repo root — open it in any browser to see the design and interactions running on sample data, no install required.
 
