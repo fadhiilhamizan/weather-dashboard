@@ -1,6 +1,11 @@
 import dotenv from 'dotenv';
 
-dotenv.config();
+// `override: true` lets the server's own .env win over variables that leak in
+// from the surrounding process. In local dev the frontend tooling runs the
+// whole stack with PORT=5173 (Vite's port); without override the Express server
+// would inherit that and collide with Vite instead of binding its own 5050.
+// In production there is no .env file, so this has no effect there.
+dotenv.config({ override: true });
 
 const toInt = (value, fallback) => {
   const parsed = Number.parseInt(value, 10);

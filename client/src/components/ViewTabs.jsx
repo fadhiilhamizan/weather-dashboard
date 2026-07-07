@@ -24,13 +24,13 @@ export default function ViewTabs({ view, onChange }) {
             aria-selected={active}
             onClick={() => onChange(value)}
             className={[
-              'flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold transition-all duration-200',
+              'flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-semibold transition-all duration-200 sm:px-3 sm:text-sm',
               active ? 'text-[#0b1f3a]' : 'text-[color:var(--text-soft)] hover:text-[color:var(--text-strong)]',
             ].join(' ')}
             style={active ? { background: 'var(--accent)' } : undefined}
           >
-            <Icon className="h-4 w-4" strokeWidth={2} />
-            <span className="hidden sm:inline">{label}</span>
+            <Icon className="h-4 w-4 shrink-0" strokeWidth={2} />
+            <span>{label}</span>
           </button>
         );
       })}

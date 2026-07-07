@@ -106,8 +106,16 @@ export default function Insights({ data }) {
         Insights
       </h2>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {insights.map(({ icon: Icon, title, text }) => (
-          <div key={title} className="glass glass-sheen flex gap-3 rounded-2xl p-4">
+        {insights.map(({ icon: Icon, title, text }, i) => (
+          <div
+            key={title}
+            className={[
+              'glass glass-sheen flex gap-3 rounded-2xl p-4',
+              // An odd number of insights would leave the last card beside an
+              // empty column — let it span the full width instead.
+              i === insights.length - 1 && insights.length % 2 === 1 ? 'sm:col-span-2' : '',
+            ].join(' ')}
+          >
             <div
               className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
               style={{ background: 'var(--glass-bg-strong)', color: 'var(--accent)' }}

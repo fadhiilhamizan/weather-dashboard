@@ -36,16 +36,19 @@ export default function CurrentWeather({ data, isFavorite = false, onToggleFavor
                 aria-pressed={isFavorite}
                 aria-label={isFavorite ? 'Remove from saved locations' : 'Save this location'}
                 title={isFavorite ? 'Saved — click to remove' : 'Save location'}
-                className="ml-0.5 shrink-0 rounded-full p-1 transition-all duration-200 hover:scale-110 hover:bg-white/10"
+                className="ml-1.5 inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-all duration-200 hover:scale-105"
+                style={{
+                  borderColor: isFavorite ? 'var(--accent)' : 'var(--glass-border)',
+                  background: isFavorite ? 'var(--glass-bg-strong)' : 'var(--glass-bg)',
+                  color: isFavorite ? 'var(--accent)' : 'var(--text-soft)',
+                }}
               >
                 <Star
-                  className="h-4 w-4"
+                  className="h-3.5 w-3.5"
                   strokeWidth={2}
-                  style={{
-                    color: isFavorite ? 'var(--accent)' : 'var(--text-faint)',
-                    fill: isFavorite ? 'var(--accent)' : 'transparent',
-                  }}
+                  style={{ fill: isFavorite ? 'var(--accent)' : 'transparent' }}
                 />
+                <span>{isFavorite ? 'Saved' : 'Save'}</span>
               </button>
             )}
           </div>
